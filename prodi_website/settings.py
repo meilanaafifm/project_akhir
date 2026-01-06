@@ -25,11 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.humanize',  # Untuk format angka
-    
-    # Third party apps
-    'crispy_forms',
-    'crispy_bootstrap5',
+    'django.contrib.humanize',
     
     # Local apps
     'main.apps.MainConfig',
@@ -37,12 +33,11 @@ INSTALLED_APPS = [
     'akademik.apps.AkademikConfig',
     'prestasi.apps.PrestasiConfig',
     'karya.apps.KaryaConfig',
-    'chatbot.apps.ChatbotConfig',  # Inovasi: AI Chatbot
+    'chatbot.apps.ChatbotConfig',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -106,7 +101,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files (User uploaded content)
 MEDIA_URL = 'media/'
@@ -115,9 +109,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Crispy Forms settings
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
-CRISPY_TEMPLATE_PACK = "bootstrap5"
+# Form settings
+# Using Bootstrap 5 for forms
 
 # Email settings (untuk notifikasi)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Development
