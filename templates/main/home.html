@@ -529,11 +529,7 @@
                     <div class="kaprodi-info mt-4">
                         <div class="d-flex align-items-center">
                             <div class="kaprodi-avatar me-3">
-                                {% if profil and profil.foto_kaprodi %}
-                                <img src="{{ profil.foto_kaprodi.url }}" alt="">
-                                {% else %}
                                 <i class="bi bi-person-circle"></i>
-                                {% endif %}
                             </div>
                             <div>
                                 <h6 class="mb-0">{{ profil.nama_kaprodi|default:"Ketua Prodi" }}</h6>
