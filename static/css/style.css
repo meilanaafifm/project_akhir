@@ -2220,3 +2220,62 @@ h6 { font-size: 1rem; }
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
+/* CTA Section */
+.cta-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 80px 0;
+    position: relative;
+    z-index: 1;
+}
+
+.cta-content {
+    color: #fff;
+}
+
+.cta-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #fff;
+}
+
+.cta-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 2rem;
+    color: #fff;
+}
+
+.cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.cta-buttons .btn {
+    padding: 12px 30px;
+    font-weight: 600;
+    border-radius: 50px;
+}
+
+.cta-buttons .btn-light {
+    background: #fff;
+    color: #667eea;
+}
+
+.cta-buttons .btn-light:hover {
+    background: #f0f0f0;
+    transform: translateY(-2px);
+}
+
+.cta-buttons .btn-outline-light {
+    border: 2px solid #fff;
+    color: #fff;
+}
+
+.cta-buttons .btn-outline-light:hover {
+    background: #fff;
+    color: #667eea;
+    transform: translateY(-2px);
+}
