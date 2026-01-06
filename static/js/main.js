@@ -4,6 +4,15 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Hide preloader
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        preloader.classList.add('hidden');
+        setTimeout(() => {
+            preloader.style.display = 'none';
+        }, 300);
+    }
+    
     // Initialize components
     initNavbar();
     initScrollToTop();
