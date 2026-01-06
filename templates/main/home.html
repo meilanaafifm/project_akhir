@@ -526,16 +526,9 @@
                     </p>
                     {% endif %}
                     
-                    <div class="kaprodi-info mt-4">
-                        <div class="d-flex align-items-center">
-                            <div class="kaprodi-avatar me-3">
-                                <i class="bi bi-person-circle"></i>
-                            </div>
-                            <div>
-                                <h6 class="mb-0">{{ profil.nama_kaprodi|default:"Ketua Prodi" }}</h6>
-                                <small class="text-muted">{{ profil.gelar_kaprodi|default:"Ketua Program Studi" }}</small>
-                            </div>
-                        </div>
+                    <div class="mt-4">
+                        <h6 class="mb-0">{{ profil.nama_kaprodi|default:"Ketua Prodi" }}</h6>
+                        <small class="text-muted">{{ profil.gelar_kaprodi|default:"Ketua Program Studi" }}</small>
                     </div>
                     
                     <div class="mt-4">
