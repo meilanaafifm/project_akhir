@@ -14,18 +14,17 @@ urlpatterns = [
     
     # Kurikulum
     path('kurikulum/', views.KurikulumView.as_view(), name='kurikulum'),
-    path('matakuliah/<str:kode>/', views.MataKuliahDetailView.as_view(), name='matakuliah_detail'),
+    path('matakuliah/<slug:slug>/', views.MataKuliahDetailView.as_view(), name='matakuliah_detail'),
     
     # Jadwal
-    path('jadwal/', views.JadwalKuliahView.as_view(), name='jadwal'),
-    path('api/jadwal/', views.jadwal_api, name='jadwal_api'),
+    path('jadwal/', views.JadwalView.as_view(), name='jadwal'),
     
     # Riset Grup
-    path('riset-grup/', views.RisetGrupListView.as_view(), name='riset_grup'),
+    path('riset-grup/', views.RisetGrupView.as_view(), name='riset_grup'),
     
     # Publikasi
-    path('publikasi/', views.PublikasiListView.as_view(), name='publikasi'),
+    path('publikasi/', views.PublikasiView.as_view(), name='publikasi'),
     
     # Fasilitas
-    path('fasilitas/', views.FasilitasListView.as_view(), name='fasilitas'),
+    path('fasilitas/', views.FasilitasView.as_view(), name='fasilitas'),
 ]

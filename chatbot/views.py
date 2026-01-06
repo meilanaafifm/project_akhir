@@ -1,13 +1,12 @@
 """
-Views untuk aplikasi Chatbot - Compatible with Vercel
+Views untuk aplikasi Chatbot
 """
 
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-import os
 
-IS_VERCEL = os.environ.get('VERCEL', False)
+from .models import ChatbotKnowledge, ChatMessage
 
 
 def chatbot_widget(request):
@@ -19,27 +18,32 @@ def chatbot_widget(request):
 def chatbot_response(request):
     """Handle chatbot messages"""
     if request.method == 'POST':
-        message = request.POST.get('message', '')
+        message = request.POST.get('message', '').lower().strip()
         
-        # Simple response for demo
-        responses = {
-            'halo': 'Halo! Selamat datang di Program Studi Teknik Informatika. Ada yang bisa saya bantu?',
-            'pendaftaran': 'Untuk informasi pendaftaran, silakan kunjungi halaman PMB atau hubungi bagian admisi.',
-            'akreditasi': 'Program Studi kami terakreditasi A oleh BAN-PT.',
-            'biaya': 'Informasi biaya kuliah dapat dilihat di website resmi universitas atau hubungi bagian keuangan.',
-            'kurikulum': 'Kurikulum kami berbasis KKNI dan disesuaikan dengan kebutuhan industri.',
-        }
+        # Cari response dari database
+        response_text = None
         
-        # Find matching response
-        response = 'Terima kasih atas pertanyaannya. Untuk informasi lebih lanjut, silakan hubungi kami melalui halaman Kontak.'
-        for key, val in responses.items():
-            if key in message.lower():
-                response = val
-                break
+        # Cek keyword match
+        try:
+            responses = ChatbotKnowledge.objects.filter(is_active=True).order_by('-prioritas')
+            for resp in responses:
+                keywords = [k.strip().lower() for k in resp.kata_kunci.split(',')]
+                for keyword in keywords:
+                    if keyword in message:
+                        response_text = resp.jawaban
+                        break
+                if response_text:
+                    break
+        except:
+            pass
+        
+        # Default response jika tidak ada match
+        if not response_text:
+            response_text = 'Terima kasih atas pertanyaannya. Untuk informasi lebih lanjut, silakan hubungi kami melalui halaman Kontak atau email ke prodi@universitas.ac.id'
         
         return JsonResponse({
             'status': 'success',
-            'response': response
+            'response': response_text
         })
     
     return JsonResponse({'status': 'error'}, status=400)

@@ -1,24 +1,16 @@
 """
 Context processor untuk main app
-Menyediakan data yang dapat diakses di semua template
 """
 
-import os
-
-IS_VERCEL = os.environ.get('VERCEL', False)
+from .models import SiteSettings
 
 
 def site_settings(request):
-    """
-    Menyediakan pengaturan website di semua template
-    """
-    settings = None
-    if not IS_VERCEL:
-        try:
-            from .models import SiteSettings
-            settings = SiteSettings.get_settings()
-        except Exception:
-            pass
+    """Menyediakan pengaturan website di semua template"""
+    try:
+        settings = SiteSettings.get_settings()
+    except:
+        settings = None
     
     return {
         'site_settings': settings,
