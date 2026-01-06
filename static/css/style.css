@@ -2279,3 +2279,42 @@ h6 { font-size: 1rem; }
     color: #667eea;
     transform: translateY(-2px);
 }
+
+/* Kaprodi Photo Modern Style */
+.kaprodi-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.kaprodi-photo-modern {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #fff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.kaprodi-photo-modern:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3);
+}
+
+.kaprodi-photo-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 5px solid #fff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.kaprodi-photo-placeholder i {
+    font-size: 4rem;
+    color: #fff;
+}

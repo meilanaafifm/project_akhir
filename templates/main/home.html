@@ -445,6 +445,9 @@
         </div>
     </div>
     
+
+
+
     <!-- Scroll Indicator -->
     <div class="hero-scroll-indicator">
         <a href="#stats-section">
@@ -515,8 +518,16 @@
                     </p>
                     {% endif %}
                     
-                    <div class="mt-4">
-                        <h6 class="mb-0">{{ profil.nama_kaprodi|default:"Ketua Prodi" }}</h6>
+                    <!-- Foto Kaprodi Modern -->
+                    <div class="kaprodi-profile mt-4">
+                        {% if profil and profil.foto_kaprodi %}
+                        <img src="{{ profil.foto_kaprodi.url }}" alt="{{ profil.nama_kaprodi }}" class="kaprodi-photo-modern">
+                        {% else %}
+                        <div class="kaprodi-photo-placeholder">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        {% endif %}
+                        <h6 class="mt-3 mb-0">{{ profil.nama_kaprodi|default:"Ketua Prodi" }}</h6>
                         <small class="text-muted">{{ profil.gelar_kaprodi|default:"Ketua Program Studi" }}</small>
                     </div>
                     
