@@ -508,16 +508,7 @@
         <div class="row align-items-center justify-content-center">
             <div class="col-lg-8" data-aos="fade-up">
                 <div class="about-content text-center">
-                    <span class="badge bg-primary mb-3">👋🏼 Tentang Kami</span>
-                    <h2 class="section-title">Selamat Datang di {{ site_settings.site_name|default:"Prodi Teknik Informatika" }}</h2>
-                    {% if profil %}
-                    <p class="lead text-muted">{{ profil.sambutan_kaprodi|truncatewords:50 }}</p>
-                    {% else %}
-                    <p class="lead text-muted">
-                        Bersama kami, mari membangun generasi unggul untuk Indonesia maju melalui pendidikan yang kreatif dan inovatif berbasis teknologi pendidikan dan multimedia.
-                    </p>
-                    {% endif %}
-                    
+                    <span class="badge bg-primary mb-3">👋🏼 Tentang Kami</span>                    
                     <!-- Info Kaprodi -->
                     <div class="kaprodi-profile mt-4">
                         <h6 class="mb-0">{{ profil.nama_kaprodi|default:"Ketua Prodi" }}</h6>
