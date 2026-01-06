@@ -368,6 +368,190 @@
         font-size: 0.9rem;
     }
 }
+
+/* About Section Modern - Purple Gradient */
+.about-section-modern {
+    background: linear-gradient(135deg, #5b4ba2 0%, #7c6bc4 50%, #9d8cd9 100%);
+    padding: 5rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.about-section-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40%;
+    height: 100%;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='rgba(255,255,255,0.05)'/%3E%3C/svg%3E") repeat;
+    opacity: 0.3;
+}
+
+.video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+}
+
+.about-content-modern {
+    color: #fff;
+    position: relative;
+    z-index: 1;
+}
+
+.about-title-modern {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.emoji-icon {
+    font-size: 2rem;
+}
+
+.about-text-modern {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    opacity: 0.95;
+    margin-bottom: 2rem;
+}
+
+.kaprodi-info-modern {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: rgba(255,255,255,0.1);
+    border-radius: 60px;
+    backdrop-filter: blur(10px);
+    width: fit-content;
+}
+
+.kaprodi-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255,255,255,0.5);
+}
+
+.kaprodi-avatar-placeholder {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #fff;
+    border: 3px solid rgba(255,255,255,0.5);
+}
+
+.kaprodi-details {
+    padding-right: 1rem;
+}
+
+.kaprodi-name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+    color: #fff;
+}
+
+.kaprodi-title {
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+.program-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-program {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.btn-program:hover {
+    background: #fff;
+    color: #5b4ba2;
+    border-color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.btn-program i {
+    transition: transform 0.3s ease;
+}
+
+.btn-program:hover i {
+    transform: translateX(5px);
+}
+
+@media (max-width: 992px) {
+    .about-section-modern {
+        padding: 3rem 0;
+    }
+    
+    .about-title-modern {
+        font-size: 2rem;
+    }
+    
+    .video-wrapper {
+        margin-bottom: 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .program-buttons {
+        flex-direction: column;
+    }
+    
+    .btn-program {
+        justify-content: center;
+    }
+    
+    .kaprodi-info-modern {
+        flex-direction: column;
+        text-align: center;
+        border-radius: 20px;
+        width: 100%;
+    }
+    
+    .kaprodi-details {
+        padding-right: 0;
+    }
+}
 </style>
 {% endblock %}
 
@@ -503,24 +687,58 @@
 </section>
 
 <!-- Bagian Tentang Kami -->
-<section class="section-padding bg-light">
+<section class="about-section-modern">
     <div class="container">
-        <div class="row align-items-center justify-content-center">
-            <div class="col-lg-8" data-aos="fade-up">
-                <div class="about-content text-center">
-                    <span class="badge bg-primary mb-3">👋🏼 Tentang Kami</span>                    
-                    <!-- Info Kaprodi -->
-                    <div class="kaprodi-profile mt-4">
-                        <h6 class="mb-0">{{ profil.nama_kaprodi|default:"Ketua Prodi" }}</h6>
-                        <small class="text-muted">{{ profil.gelar_kaprodi|default:"Ketua Program Studi" }}</small>
+        <div class="row align-items-center g-5">
+            <!-- Video YouTube di Kiri -->
+            <div class="col-lg-6" data-aos="fade-right">
+                <div class="video-wrapper">
+                    <iframe 
+                        src="https://www.youtube.com/embed/{{ profil.video_profil_id|default:'dQw4w9WgXcQ' }}" 
+                        title="Profil Pendidikan Teknik Informatika"
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+            
+            <!-- Konten Tentang Kami di Kanan -->
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="about-content-modern">
+                    <h2 class="about-title-modern">
+                        <span class="emoji-icon">👋</span> Tentang Kami
+                    </h2>
+                    <p class="about-text-modern">
+                        {% if profil %}
+                        Selamat datang di {{ site_settings.site_name|default:"Program Studi Pendidikan Teknik Informatika" }}. {{ profil.sambutan_kaprodi|truncatewords:50 }}
+                        {% else %}
+                        Selamat datang di Program Studi Pendidikan Teknik Informatika. Bersama kami, mari membangun generasi unggul untuk Indonesia maju melalui pendidikan yang kreatif dan inovatif berbasis teknologi pendidikan dan multimedia. Kami berkomitmen menyiapkan pendidik-pendidik unggul yang tidak hanya andal secara teknis, tetapi juga menjunjung tinggi nilai-nilai Islami.
+                        {% endif %}
+                    </p>
+                    
+                    <!-- Info Kaprodi dengan Foto -->
+                    <div class="kaprodi-info-modern">
+                        {% if profil.foto_kaprodi %}
+                        <img src="{{ profil.foto_kaprodi.url }}" alt="{{ profil.nama_kaprodi }}" class="kaprodi-avatar">
+                        {% else %}
+                        <div class="kaprodi-avatar-placeholder">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        {% endif %}
+                        <div class="kaprodi-details">
+                            <h6 class="kaprodi-name">{{ profil.nama_kaprodi|default:"Sukirman" }}, {{ profil.gelar_kaprodi|default:"ST., M.T., Ph.D" }}</h6>
+                            <span class="kaprodi-title">Ketua Prodi</span>
+                        </div>
                     </div>
                     
-                    <div class="mt-4">
-                        <a href="{% url 'main:tentang_kami' %}" class="btn btn-primary me-2">
-                            <i class="bi bi-info-circle me-2"></i>Selengkapnya
+                    <!-- Tombol Program -->
+                    <div class="program-buttons">
+                        <a href="{% url 'akademik:kurikulum' %}" class="btn-program">
+                            Program Sarjana <i class="bi bi-chevron-right"></i>
                         </a>
-                        <a href="{% url 'main:visi_misi' %}" class="btn btn-outline-primary">
-                            <i class="bi bi-eye me-2"></i>Visi & Misi
+                        <a href="{% url 'main:tentang_kami' %}" class="btn-program">
+                            Program PPG <i class="bi bi-chevron-right"></i>
                         </a>
                     </div>
                 </div>
