@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Kontak - {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<!-- Header Halaman Modern -->
+<section class="page-header kontak-page">
+    <!-- Floating Decorative Shapes -->
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    
+    <!-- Animated Particles -->
+    <div class="header-particles">
+        <span></span><span></span><span></span>
+        <span></span><span></span><span></span>
+    </div>
+    
+    <div class="container">
+        <nav aria-label="breadcrumb" data-aos="fade-down" data-aos-delay="100">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'main:home' %}"><i class="bi bi-house-door me-1"></i>Beranda</a></li>
+                <li class="breadcrumb-item active">Kontak</li>
+            </ol>
+        </nav>
+        <h1 class="page-title" data-aos="fade-up" data-aos-delay="200">📞 Hubungi Kami</h1>
+        <p class="page-subtitle" data-aos="fade-up" data-aos-delay="300">Kami siap membantu Anda</p>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Formulir Kontak -->
+            <div class="col-lg-7" data-aos="fade-up">
+                <div class="contact-form-card">
+                    <h4 class="mb-4">Kirim Pesan</h4>
+                    
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    
+                    <form method="POST" action="{% url 'main:kontak' %}">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Nama Lengkap *</label>
+                                <input type="text" name="nama" class="form-control" required 
+                                       placeholder="Masukkan nama Anda">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email *</label>
+                                <input type="email" name="email" class="form-control" required 
+                                       placeholder="contoh@email.com">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">No. Telepon</label>
+                                <input type="tel" name="telepon" class="form-control" 
+                                       placeholder="08xxxxxxxxxx">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Subjek *</label>
+                                <select name="subjek" class="form-select" required>
+                                    <option value="">Pilih Subjek</option>
+                                    <option value="informasi_umum">Informasi Umum</option>
+                                    <option value="pendaftaran">Pendaftaran</option>
+                                    <option value="akademik">Akademik</option>
+                                    <option value="kerjasama">Kerjasama</option>
+                                    <option value="lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Pesan *</label>
+                                <textarea name="pesan" class="form-control" rows="5" required
+                                          placeholder="Tuliskan pesan Anda..."></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-send"></i> Kirim Pesan
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Informasi Kontak -->
+            <div class="col-lg-5" data-aos="fade-up" data-aos-delay="100">
+                <div class="contact-info-card mb-4">
+                    <h4 class="mb-4">Informasi Kontak</h4>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon bg-primary">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h6>Alamat</h6>
+                            <p>{{ profil.alamat }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon bg-success">
+                            <i class="bi bi-telephone-fill"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h6>Telepon</h6>
+                            <p><a href="tel:{{ profil.telepon }}">{{ profil.telepon }}</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon bg-danger">
+                            <i class="bi bi-envelope-fill"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h6>Email</h6>
+                            <p><a href="mailto:{{ profil.email }}">{{ profil.email }}</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon bg-info">
+                            <i class="bi bi-clock-fill"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h6>Jam Operasional</h6>
+                            <p>Senin - Jumat: 08:00 - 16:00 WIB<br>
+                               Sabtu: 08:00 - 12:00 WIB</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tautan Media Sosial -->
+                <div class="social-card">
+                    <h5 class="mb-3">Ikuti Kami</h5>
+                    <div class="d-flex gap-2 flex-wrap">
+                        {% if profil.facebook %}
+                        <a href="{{ profil.facebook }}" target="_blank" class="btn btn-outline-primary">
+                            <i class="bi bi-facebook"></i> Facebook
+                        </a>
+                        {% endif %}
+                        {% if profil.instagram %}
+                        <a href="{{ profil.instagram }}" target="_blank" class="btn btn-outline-danger">
+                            <i class="bi bi-instagram"></i> Instagram
+                        </a>
+                        {% endif %}
+                        {% if profil.youtube %}
+                        <a href="{{ profil.youtube }}" target="_blank" class="btn btn-outline-danger">
+                            <i class="bi bi-youtube"></i> YouTube
+                        </a>
+                        {% endif %}
+                        {% if profil.twitter %}
+                        <a href="{{ profil.twitter }}" target="_blank" class="btn btn-outline-info">
+                            <i class="bi bi-twitter"></i> Twitter
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Peta Lokasi -->
+        {% if profil.google_maps_embed %}
+        <div class="map-section mt-5" data-aos="fade-up">
+            <h4 class="mb-4 text-center">📍 Lokasi Kami</h4>
+            <div class="map-container rounded overflow-hidden shadow">
+                {{ profil.google_maps_embed|safe }}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

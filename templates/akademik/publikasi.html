@@ -1,0 +1,324 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Publikasi - {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<!-- Header Halaman Modern -->
+<section class="page-header akademik-page">
+    <!-- Floating Decorative Shapes -->
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    
+    <!-- Animated Particles -->
+    <div class="header-particles">
+        <span></span><span></span><span></span>
+        <span></span><span></span><span></span>
+    </div>
+    
+    <div class="container">
+        <nav aria-label="breadcrumb" data-aos="fade-down" data-aos-delay="100">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'main:home' %}"><i class="bi bi-house-door me-1"></i>Beranda</a></li>
+                <li class="breadcrumb-item active">Publikasi</li>
+            </ol>
+        </nav>
+        <h1 class="page-title" data-aos="fade-up" data-aos-delay="200">📄 Publikasi Ilmiah</h1>
+        <p class="page-subtitle" data-aos="fade-up" data-aos-delay="300">Karya ilmiah dosen dan mahasiswa</p>
+    </div>
+</section>
+
+<!-- Filter -->
+<section class="py-4 bg-light">
+    <div class="container">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label">Jenis Publikasi</label>
+                <select class="form-select" id="filterJenis">
+                    <option value="">Semua Jenis</option>
+                    <option value="jurnal">Jurnal</option>
+                    <option value="prosiding">Prosiding</option>
+                    <option value="buku">Buku</option>
+                    <option value="hki">HKI</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Tahun</label>
+                <select class="form-select" id="filterTahun">
+                    <option value="">Semua Tahun</option>
+                    {% for year in years %}
+                    <option value="{{ year }}">{{ year }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-5">
+                <label class="form-label">Cari</label>
+                <input type="text" class="form-control" id="searchPublikasi" placeholder="Judul atau penulis...">
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100" id="btnFilter">
+                    <i class="bi bi-funnel me-1"></i> Filter
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Daftar Publikasi -->
+<section class="section-padding">
+    <div class="container">
+        <!-- Statistik -->
+        <div class="row g-4 mb-5">
+            <div class="col-6 col-md-3" data-aos="fade-up">
+                <div class="stat-card text-center">
+                    <div class="stat-icon bg-primary-soft">
+                        <i class="bi bi-journal-text"></i>
+                    </div>
+                    <h3>{{ stats.jurnal|default:0 }}</h3>
+                    <p class="text-muted mb-0">Jurnal</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="stat-card text-center">
+                    <div class="stat-icon bg-success-soft">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+                    <h3>{{ stats.prosiding|default:0 }}</h3>
+                    <p class="text-muted mb-0">Prosiding</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="stat-card text-center">
+                    <div class="stat-icon bg-warning-soft">
+                        <i class="bi bi-book"></i>
+                    </div>
+                    <h3>{{ stats.buku|default:0 }}</h3>
+                    <p class="text-muted mb-0">Buku</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="stat-card text-center">
+                    <div class="stat-icon bg-info-soft">
+                        <i class="bi bi-award"></i>
+                    </div>
+                    <h3>{{ stats.hki|default:0 }}</h3>
+                    <p class="text-muted mb-0">HKI</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Daftar -->
+        <div class="publication-list" id="publicationList">
+            {% for publikasi in publikasi_list %}
+            <div class="publication-item" data-aos="fade-up" data-jenis="{{ publikasi.jenis }}" data-tahun="{{ publikasi.tahun }}">
+                <div class="publication-type">
+                    {% if publikasi.jenis == 'jurnal' %}
+                    <span class="badge bg-primary">Jurnal</span>
+                    {% elif publikasi.jenis == 'prosiding' %}
+                    <span class="badge bg-success">Prosiding</span>
+                    {% elif publikasi.jenis == 'buku' %}
+                    <span class="badge bg-warning">Buku</span>
+                    {% else %}
+                    <span class="badge bg-info">HKI</span>
+                    {% endif %}
+                </div>
+                <div class="publication-content">
+                    <h5 class="publication-title">{{ publikasi.judul }}</h5>
+                    <p class="publication-authors">
+                        <i class="bi bi-people me-1"></i>{{ publikasi.penulis }}
+                    </p>
+                    <div class="publication-meta">
+                        {% if publikasi.nama_jurnal %}
+                        <span><i class="bi bi-journal me-1"></i>{{ publikasi.nama_jurnal }}</span>
+                        {% endif %}
+                        <span><i class="bi bi-calendar me-1"></i>{{ publikasi.tahun }}</span>
+                        {% if publikasi.doi %}
+                        <span><i class="bi bi-link-45deg me-1"></i>DOI: {{ publikasi.doi }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="publication-actions">
+                    {% if publikasi.url %}
+                    <a href="{{ publikasi.url }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-box-arrow-up-right me-1"></i>Lihat
+                    </a>
+                    {% endif %}
+                    {% if publikasi.file %}
+                    <a href="{{ publikasi.file.url }}" class="btn btn-outline-secondary btn-sm" download>
+                        <i class="bi bi-download me-1"></i>Unduh
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center py-5">
+                <i class="bi bi-journal-x display-1 text-muted"></i>
+                <h4 class="mt-3">Belum Ada Publikasi</h4>
+                <p class="text-muted">Publikasi akan ditampilkan di sini</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <nav class="mt-5">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.stat-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.5rem;
+}
+
+.bg-primary-soft { background: rgba(102, 126, 234, 0.15); color: #667eea; }
+.bg-success-soft { background: rgba(40, 167, 69, 0.15); color: #28a745; }
+.bg-warning-soft { background: rgba(255, 193, 7, 0.15); color: #ffc107; }
+.bg-info-soft { background: rgba(23, 162, 184, 0.15); color: #17a2b8; }
+
+.stat-card h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.publication-item {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: all 0.3s ease;
+}
+
+.publication-item:hover {
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.publication-type {
+    flex-shrink: 0;
+}
+
+.publication-content {
+    flex: 1;
+}
+
+.publication-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.publication-authors {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.publication-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.publication-actions {
+    flex-shrink: 0;
+    display: flex;
+    gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .publication-item {
+        flex-direction: column;
+    }
+    
+    .publication-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchPublikasi');
+    const filterJenis = document.getElementById('filterJenis');
+    const filterTahun = document.getElementById('filterTahun');
+    const items = document.querySelectorAll('.publication-item');
+    
+    function filterItems() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const jenis = filterJenis.value;
+        const tahun = filterTahun.value;
+        
+        items.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            const itemJenis = item.dataset.jenis;
+            const itemTahun = item.dataset.tahun;
+            
+            let show = true;
+            
+            if (searchTerm && !text.includes(searchTerm)) show = false;
+            if (jenis && itemJenis !== jenis) show = false;
+            if (tahun && itemTahun !== tahun) show = false;
+            
+            item.style.display = show ? '' : 'none';
+        });
+    }
+    
+    searchInput.addEventListener('input', filterItems);
+    filterJenis.addEventListener('change', filterItems);
+    filterTahun.addEventListener('change', filterItems);
+    document.getElementById('btnFilter').addEventListener('click', filterItems);
+});
+</script>
+{% endblock %}

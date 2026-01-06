@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}FAQ - {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<!-- Header Halaman Modern -->
+<section class="page-header">
+    <!-- Floating Decorative Shapes -->
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    
+    <!-- Animated Particles -->
+    <div class="header-particles">
+        <span></span><span></span><span></span>
+        <span></span><span></span><span></span>
+    </div>
+    
+    <div class="container">
+        <nav aria-label="breadcrumb" data-aos="fade-down" data-aos-delay="100">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'main:home' %}"><i class="bi bi-house-door me-1"></i>Beranda</a></li>
+                <li class="breadcrumb-item active">FAQ</li>
+            </ol>
+        </nav>
+        <h1 class="page-title" data-aos="fade-up" data-aos-delay="200">❓ FAQ</h1>
+        <p class="page-subtitle" data-aos="fade-up" data-aos-delay="300">Pertanyaan yang sering diajukan</p>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <!-- Pencarian -->
+                <div class="faq-search mb-5" data-aos="fade-up">
+                    <form method="GET" class="input-group input-group-lg">
+                        <input type="text" name="q" class="form-control" 
+                               placeholder="Cari pertanyaan..." value="{{ search_query }}">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Filter Kategori -->
+                {% if kategori_list %}
+                <div class="faq-categories mb-4" data-aos="fade-up">
+                    <div class="d-flex flex-wrap gap-2 justify-content-center">
+                        <a href="{% url 'main:faq' %}" class="btn btn-sm {% if not selected_kategori %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                            Semua
+                        </a>
+                        {% for kategori in kategori_list %}
+                        <a href="?kategori={{ kategori.slug }}" 
+                           class="btn btn-sm {% if selected_kategori == kategori.slug %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                            {{ kategori.nama }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Akordion FAQ -->
+                <div class="faq-accordion" data-aos="fade-up">
+                    <div class="accordion" id="faqAccordion">
+                        {% for faq in faq_list %}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading{{ faq.id }}">
+                                <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" 
+                                        type="button" 
+                                        data-bs-toggle="collapse" 
+                                        data-bs-target="#collapse{{ faq.id }}">
+                                    <span class="faq-number">{{ forloop.counter }}</span>
+                                    {{ faq.pertanyaan }}
+                                </button>
+                            </h2>
+                            <div id="collapse{{ faq.id }}" 
+                                 class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" 
+                                 data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    {{ faq.jawaban|linebreaks }}
+                                    
+                                    <!-- Apakah Membantu -->
+                                    <div class="faq-helpful mt-3 pt-3 border-top">
+                                        <small class="text-muted">Apakah jawaban ini membantu?</small>
+                                        <div class="btn-group btn-group-sm ms-2">
+                                            <button class="btn btn-outline-success" data-faq-id="{{ faq.id }}" data-rating="yes" onclick="rateFaq(this)">
+                                                <i class="bi bi-hand-thumbs-up"></i> Ya
+                                            </button>
+                                            <button class="btn btn-outline-danger" data-faq-id="{{ faq.id }}" data-rating="no" onclick="rateFaq(this)">
+                                                <i class="bi bi-hand-thumbs-down"></i> Tidak
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="empty-state text-center py-5">
+                            <i class="bi bi-question-circle display-1 text-muted"></i>
+                            <h4 class="mt-3">Tidak Ada FAQ</h4>
+                            <p class="text-muted">
+                                {% if search_query %}
+                                Tidak ditemukan FAQ dengan kata kunci "{{ search_query }}"
+                                {% else %}
+                                Belum ada FAQ yang tersedia.
+                                {% endif %}
+                            </p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Masih Punya Pertanyaan -->
+                <div class="faq-contact text-center mt-5" data-aos="fade-up">
+                    <div class="contact-cta">
+                        <h4>Masih punya pertanyaan?</h4>
+                        <p class="text-muted">Hubungi kami atau gunakan chatbot untuk bantuan lebih lanjut</p>
+                        <div class="d-flex gap-3 justify-content-center">
+                            <a href="{% url 'main:kontak' %}" class="btn btn-primary">
+                                <i class="bi bi-envelope"></i> Hubungi Kami
+                            </a>
+                            <button class="btn btn-outline-primary" onclick="openChatbot()">
+                                <i class="bi bi-chat-dots"></i> Tanya Chatbot
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function rateFaq(element) {
+    var faqId = element.getAttribute('data-faq-id');
+    var rating = element.getAttribute('data-rating');
+    
+    fetch('/api/faq/' + faqId + '/rate/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ rating: rating })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert('Terima kasih atas feedback Anda!');
+        }
+    });
+}
+
+function openChatbot() {
+    // Membuka chatbot
+    if (typeof toggleChatbot === 'function') {
+        toggleChatbot();
+    }
+}
+</script>
+{% endblock %}

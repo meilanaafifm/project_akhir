@@ -1,0 +1,466 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Visi & Misi - {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<!-- Header Halaman Modern -->
+<section class="page-header">
+    <!-- Floating Decorative Shapes -->
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    
+    <!-- Animated Particles -->
+    <div class="header-particles">
+        <span></span><span></span><span></span>
+        <span></span><span></span><span></span>
+    </div>
+    
+    <div class="container">
+        <nav aria-label="breadcrumb" data-aos="fade-down" data-aos-delay="100">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'main:home' %}"><i class="bi bi-house-door me-1"></i>Beranda</a></li>
+                <li class="breadcrumb-item active">Visi & Misi</li>
+            </ol>
+        </nav>
+        <h1 class="page-title" data-aos="fade-up" data-aos-delay="200">🎯 Visi & Misi</h1>
+        <p class="page-subtitle" data-aos="fade-up" data-aos-delay="300">Arah dan tujuan Program Studi kami</p>
+    </div>
+</section>
+
+<!-- Bagian Visi -->
+<section class="section-padding">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-10">
+                <div class="vision-card" data-aos="fade-up">
+                    <div class="vision-icon">
+                        <i class="bi bi-eye-fill"></i>
+                    </div>
+                    <h2 class="vision-title">Visi</h2>
+                    <div class="vision-content">
+                        {% if profil and profil.visi %}
+                        <p class="vision-text">{{ profil.visi }}</p>
+                        {% else %}
+                        <p class="vision-text">
+                            Menjadi Program Studi unggulan yang menghasilkan lulusan berkompeten 
+                            di bidang pendidikan teknologi informatika, berkarakter islami, 
+                            dan mampu bersaing di tingkat nasional maupun internasional.
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Bagian Misi -->
+<section class="section-padding bg-light">
+    <div class="container">
+        <div class="section-header text-center mb-5" data-aos="fade-up">
+            <div class="mission-icon-header">
+                <i class="bi bi-bullseye"></i>
+            </div>
+            <h2>Misi</h2>
+            <p class="text-muted">Langkah-langkah strategis untuk mencapai visi</p>
+        </div>
+        
+        <div class="row g-4">
+            {% if profil and profil.misi %}
+                {% for misi in profil.get_misi_list %}
+                <div class="col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+                    <div class="mission-card h-100">
+                        <div class="mission-number">{{ forloop.counter }}</div>
+                        <div class="mission-content">
+                            <p>{{ misi }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="mission-card h-100">
+                        <div class="mission-number">1</div>
+                        <div class="mission-content">
+                            <p>Menyelenggarakan pendidikan tinggi yang berkualitas untuk menghasilkan lulusan yang kompeten di bidang pendidikan teknik informatika.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="mission-card h-100">
+                        <div class="mission-number">2</div>
+                        <div class="mission-content">
+                            <p>Melaksanakan penelitian yang inovatif dan bermanfaat bagi pengembangan ilmu pengetahuan dan teknologi pendidikan.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="mission-card h-100">
+                        <div class="mission-number">3</div>
+                        <div class="mission-content">
+                            <p>Melaksanakan pengabdian kepada masyarakat melalui penerapan ilmu pengetahuan dan teknologi di bidang pendidikan.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="mission-card h-100">
+                        <div class="mission-number">4</div>
+                        <div class="mission-content">
+                            <p>Membangun kerjasama dengan berbagai pihak untuk meningkatkan kualitas pendidikan dan pengembangan karir lulusan.</p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Bagian Tujuan -->
+<section class="section-padding">
+    <div class="container">
+        <div class="section-header text-center mb-5" data-aos="fade-up">
+            <div class="goal-icon-header">
+                <i class="bi bi-flag-fill"></i>
+            </div>
+            <h2>Tujuan</h2>
+            <p class="text-muted">Target dan sasaran yang ingin dicapai</p>
+        </div>
+        
+        <div class="row g-4">
+            {% if profil and profil.tujuan %}
+                {% for tujuan in profil.get_tujuan_list %}
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+                    <div class="goal-card h-100">
+                        <div class="goal-icon">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </div>
+                        <p>{{ tujuan }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="goal-card h-100">
+                        <div class="goal-icon">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </div>
+                        <p>Menghasilkan lulusan yang memiliki kompetensi pedagogik, profesional, sosial, dan kepribadian.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="goal-card h-100">
+                        <div class="goal-icon">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </div>
+                        <p>Menghasilkan penelitian berkualitas yang berkontribusi pada pengembangan teknologi pendidikan.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="goal-card h-100">
+                        <div class="goal-icon">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </div>
+                        <p>Menjalin kemitraan strategis dengan industri dan institusi pendidikan.</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Bagian Nilai-Nilai -->
+<section class="section-padding bg-gradient-primary text-white">
+    <div class="container">
+        <div class="section-header text-center mb-5" data-aos="fade-up">
+            <h2 class="text-white">Nilai-Nilai Kami</h2>
+            <p class="text-white-50">Prinsip yang kami pegang teguh</p>
+        </div>
+        
+        <div class="row g-4 justify-content-center">
+            <div class="col-6 col-md-4 col-lg-2" data-aos="zoom-in" data-aos-delay="100">
+                <div class="value-card text-center">
+                    <div class="value-icon">
+                        <i class="bi bi-lightbulb-fill"></i>
+                    </div>
+                    <h6>Inovatif</h6>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2" data-aos="zoom-in" data-aos-delay="200">
+                <div class="value-card text-center">
+                    <div class="value-icon">
+                        <i class="bi bi-book-fill"></i>
+                    </div>
+                    <h6>Edukatif</h6>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2" data-aos="zoom-in" data-aos-delay="300">
+                <div class="value-card text-center">
+                    <div class="value-icon">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <h6>Kolaboratif</h6>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2" data-aos="zoom-in" data-aos-delay="400">
+                <div class="value-card text-center">
+                    <div class="value-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h6>Integritas</h6>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-2" data-aos="zoom-in" data-aos-delay="500">
+                <div class="value-card text-center">
+                    <div class="value-icon">
+                        <i class="bi bi-globe"></i>
+                    </div>
+                    <h6>Global</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Vision Card */
+.vision-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 24px;
+    padding: 3rem;
+    text-align: center;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+.vision-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+}
+
+.vision-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+}
+
+.vision-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.vision-text {
+    font-size: 1.25rem;
+    line-height: 1.8;
+    opacity: 0.95;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Mission Card */
+.mission-icon-header,
+.goal-icon-header {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.8rem;
+    color: #fff;
+}
+
+.mission-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.mission-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+}
+
+.mission-number {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.mission-content p {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #555;
+}
+
+/* Goal Card */
+.goal-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.goal-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+}
+
+.goal-icon {
+    font-size: 2.5rem;
+    color: #667eea;
+    margin-bottom: 1rem;
+}
+
+.goal-card p {
+    margin: 0;
+    color: #555;
+    line-height: 1.7;
+}
+
+/* Value Card */
+.value-card {
+    padding: 1.5rem 1rem;
+}
+
+.value-icon {
+    width: 70px;
+    height: 70px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.8rem;
+    transition: all 0.3s ease;
+}
+
+.value-card:hover .value-icon {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.1);
+}
+
+.value-card h6 {
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Background Gradient */
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Header Particles Animation */
+.header-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.header-particles span {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    animation: header-particle-float 15s infinite;
+}
+
+.header-particles span:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; width: 15px; height: 15px; }
+.header-particles span:nth-child(2) { left: 20%; top: 60%; animation-delay: -2s; width: 25px; height: 25px; }
+.header-particles span:nth-child(3) { left: 40%; top: 40%; animation-delay: -4s; width: 10px; height: 10px; }
+.header-particles span:nth-child(4) { left: 60%; top: 70%; animation-delay: -6s; width: 20px; height: 20px; }
+.header-particles span:nth-child(5) { left: 80%; top: 30%; animation-delay: -8s; width: 30px; height: 30px; }
+.header-particles span:nth-child(6) { left: 90%; top: 80%; animation-delay: -10s; width: 12px; height: 12px; }
+
+@keyframes header-particle-float {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.3;
+    }
+    50% {
+        transform: translateY(-30px) rotate(180deg);
+        opacity: 0.6;
+    }
+}
+
+.floating-shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.1;
+    animation: float-shape 15s ease-in-out infinite;
+}
+
+.shape-1 {
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(135deg, #fff 0%, transparent 100%);
+    top: -100px;
+    right: -50px;
+    animation-delay: 0s;
+}
+
+.shape-2 {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, #fff 0%, transparent 100%);
+    bottom: -50px;
+    left: 10%;
+    animation-delay: -5s;
+}
+
+.shape-3 {
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, #fff 0%, transparent 100%);
+    top: 30%;
+    left: 5%;
+    animation-delay: -10s;
+}
+
+@keyframes float-shape {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(10deg); }
+}
+</style>
+{% endblock %}

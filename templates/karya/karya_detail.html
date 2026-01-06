@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ karya.judul }} - {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<!-- Header Halaman Modern -->
+<section class="page-header page-header-small karya-page">
+    <!-- Floating Decorative Shapes -->
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    
+    <div class="container">
+        <nav aria-label="breadcrumb" data-aos="fade-down">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'main:home' %}"><i class="bi bi-house-door me-1"></i>Beranda</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'karya:list' %}">Karya</a></li>
+                <li class="breadcrumb-item active">{{ karya.judul|truncatewords:5 }}</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <!-- Konten Utama -->
+            <div class="col-lg-8">
+                <article class="karya-detail" data-aos="fade-up">
+                    <!-- Galeri -->
+                    <div class="karya-gallery mb-4">
+                        <div class="main-image mb-3">
+                            {% if karya.gambar_utama %}
+                            <img src="{{ karya.gambar_utama.url }}" alt="{{ karya.judul }}" class="img-fluid rounded" id="mainImage">
+                            {% endif %}
+                        </div>
+                        {% if karya.gambar_2 or karya.gambar_3 %}
+                        <div class="thumbnail-row d-flex gap-2">
+                            <div class="thumbnail active" onclick="changeImage('{{ karya.gambar_utama.url }}', this)">
+                                <img src="{{ karya.gambar_utama.url }}" alt="">
+                            </div>
+                            {% if karya.gambar_2 %}
+                            <div class="thumbnail" onclick="changeImage('{{ karya.gambar_2.url }}', this)">
+                                <img src="{{ karya.gambar_2.url }}" alt="">
+                            </div>
+                            {% endif %}
+                            {% if karya.gambar_3 %}
+                            <div class="thumbnail" onclick="changeImage('{{ karya.gambar_3.url }}', this)">
+                                <img src="{{ karya.gambar_3.url }}" alt="">
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Video Demo -->
+                    {% if karya.video_demo %}
+                    <div class="karya-video mb-4">
+                        <h5><i class="bi bi-play-circle"></i> Video Demo</h5>
+                        <div class="ratio ratio-16x9">
+                            <iframe src="{{ karya.video_demo|cut:'watch?v='|cut:'https://www.youtube.com/'|add:'https://www.youtube.com/embed/' }}" 
+                                    allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Deskripsi -->
+                    <div class="karya-description mb-4">
+                        <h5>Deskripsi</h5>
+                        <p>{{ karya.deskripsi|linebreaks }}</p>
+                    </div>
+                    
+                    <!-- Fitur -->
+                    {% if karya.fitur %}
+                    <div class="karya-features mb-4">
+                        <h5><i class="bi bi-check2-square"></i> Fitur Utama</h5>
+                        <ul class="feature-list">
+                            {% for fitur in karya.get_fitur_list %}
+                            <li><i class="bi bi-check-circle-fill text-success"></i> {{ fitur }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Teknologi yang Digunakan -->
+                    {% if karya.teknologi.all %}
+                    <div class="karya-tech-stack mb-4">
+                        <h5><i class="bi bi-gear"></i> Teknologi yang Digunakan</h5>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for tech in karya.teknologi.all %}
+                            <span class="badge bg-primary bg-opacity-10 text-primary py-2 px-3">
+                                {{ tech.nama }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </article>
+            </div>
+            
+            <!-- Bilah Samping -->
+            <div class="col-lg-4">
+                <!-- Informasi Karya -->
+                <div class="sidebar-widget" data-aos="fade-up">
+                    <h5 class="widget-title">Informasi Karya</h5>
+                    
+                    <div class="project-info">
+                        <div class="info-item">
+                            <span class="info-label">Judul</span>
+                            <span class="info-value">{{ karya.judul }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Jenis</span>
+                            <span class="info-value badge bg-primary">{{ karya.get_jenis_display }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Tahun</span>
+                            <span class="info-value">{{ karya.tahun }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Views</span>
+                            <span class="info-value">{{ karya.view_count }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Likes</span>
+                            <span class="info-value" id="likeCount">{{ karya.like_count }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Informasi Pembuat -->
+                <div class="sidebar-widget" data-aos="fade-up">
+                    <h5 class="widget-title"><i class="bi bi-person"></i> Pembuat</h5>
+                    
+                    <div class="creator-card">
+                        <div class="creator-avatar">
+                            {% if karya.foto_pembuat %}
+                            <img src="{{ karya.foto_pembuat.url }}" alt="{{ karya.nama_pembuat }}">
+                            {% else %}
+                            <i class="bi bi-person-circle"></i>
+                            {% endif %}
+                        </div>
+                        <div class="creator-info">
+                            <h6 class="mb-0">{{ karya.nama_pembuat }}</h6>
+                            {% if karya.nim_pembuat %}
+                            <small class="text-muted">NIM: {{ karya.nim_pembuat }}</small>
+                            {% endif %}
+                            {% if karya.angkatan %}
+                            <small class="text-muted d-block">Angkatan {{ karya.angkatan }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if karya.nama_pembimbing %}
+                    <div class="mt-3">
+                        <small class="text-muted">Pembimbing:</small>
+                        <p class="mb-0">{{ karya.nama_pembimbing }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Tombol Aksi -->
+                <div class="sidebar-widget" data-aos="fade-up">
+                    <h5 class="widget-title"><i class="bi bi-link-45deg"></i> Link</h5>
+                    
+                    <div class="d-grid gap-2">
+                        {% if karya.link_demo %}
+                        <a href="{{ karya.link_demo }}" target="_blank" class="btn btn-primary">
+                            <i class="bi bi-play-fill"></i> Lihat Demo
+                        </a>
+                        {% endif %}
+                        
+                        {% if karya.link_github %}
+                        <a href="{{ karya.link_github }}" target="_blank" class="btn btn-dark">
+                            <i class="bi bi-github"></i> GitHub
+                        </a>
+                        {% endif %}
+                        
+                        {% if karya.link_playstore %}
+                        <a href="{{ karya.link_playstore }}" target="_blank" class="btn btn-success">
+                            <i class="bi bi-google-play"></i> Play Store
+                        </a>
+                        {% endif %}
+                        
+                        {% if karya.link_download %}
+                        <a href="{{ karya.link_download }}" target="_blank" class="btn btn-info">
+                            <i class="bi bi-download"></i> Download
+                        </a>
+                        {% endif %}
+                        
+                        <button class="btn btn-outline-danger" id="likeBtn" onclick="likeKarya()">
+                            <i class="bi bi-heart"></i> <span id="likeBtnText">Suka</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Tombol Kembali -->
+                <div class="sidebar-widget" data-aos="fade-up">
+                    <a href="{% url 'karya:list' %}" class="btn btn-outline-primary w-100">
+                        <i class="bi bi-arrow-left"></i> Kembali ke Daftar
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Karya Terkait -->
+        {% if related_list %}
+        <div class="related-section mt-5" data-aos="fade-up">
+            <h4 class="mb-4">Karya Terkait</h4>
+            <div class="row g-4">
+                {% for item in related_list %}
+                <div class="col-md-6 col-lg-3">
+                    <div class="karya-card">
+                        <div class="karya-image">
+                            {% if item.gambar_utama %}
+                            <img src="{{ item.gambar_utama.url }}" alt="{{ item.judul }}">
+                            {% else %}
+                            <img src="{% static 'images/karya-placeholder.jpg' %}" alt="">
+                            {% endif %}
+                            <div class="karya-overlay">
+                                <a href="{{ item.get_absolute_url }}" class="btn btn-light btn-sm">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="karya-content">
+                            <h6><a href="{{ item.get_absolute_url }}">{{ item.judul|truncatewords:5 }}</a></h6>
+                            <small class="text-muted">{{ item.nama_pembuat }}</small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function changeImage(src, element) {
+    document.getElementById('mainImage').src = src;
+    document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+    element.classList.add('active');
+}
+
+function likeKarya() {
+    fetch("{% url 'karya:like' karya.slug %}", {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'liked') {
+            document.getElementById('likeCount').textContent = data.like_count;
+            document.getElementById('likeBtnText').textContent = 'Disukai!';
+            document.getElementById('likeBtn').classList.remove('btn-outline-danger');
+            document.getElementById('likeBtn').classList.add('btn-danger');
+        } else if (data.status === 'already_liked') {
+            alert('Anda sudah menyukai karya ini!');
+        }
+    });
+}
+</script>
+{% endblock %}

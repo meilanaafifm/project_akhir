@@ -1,0 +1,25 @@
+# Django Website Program Studi
+# Requirements
+
+# Core Django
+Django>=4.2,<5.0
+
+# Django Extensions
+django-crispy-forms>=2.1
+crispy-bootstrap5>=2023.10
+
+# Image Processing
+Pillow>=10.0.0
+
+# Database (untuk production, bisa pakai PostgreSQL)
+# psycopg2-binary>=2.9.9
+
+# Environment Variables
+python-dotenv>=1.0.0
+
+# Development Tools
+django-debug-toolbar>=4.2.0
+
+# Text Processing (untuk chatbot)
+# nltk>=3.8.1
+# scikit-learn>=1.3.0

@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Berita & Informasi - {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<!-- Header Halaman Modern -->
+<section class="page-header berita-page">
+    <!-- Floating Decorative Shapes -->
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    
+    <!-- Animated Particles -->
+    <div class="header-particles">
+        <span></span><span></span><span></span>
+        <span></span><span></span><span></span>
+    </div>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav aria-label="breadcrumb" data-aos="fade-down" data-aos-delay="100">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'main:home' %}"><i class="bi bi-house-door me-1"></i>Beranda</a></li>
+                        <li class="breadcrumb-item active">Berita</li>
+                    </ol>
+                </nav>
+                <h1 class="page-title" data-aos="fade-up" data-aos-delay="200">🗞️ Berita & Informasi</h1>
+                <p class="page-subtitle" data-aos="fade-up" data-aos-delay="300">Informasi terbaru seputar kegiatan dan program studi</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <!-- Konten Utama -->
+            <div class="col-lg-8">
+                <!-- Bilah Filter -->
+                <div class="filter-bar mb-4" data-aos="fade-up">
+                    <form method="GET" class="row g-2">
+                        <div class="col-md-4">
+                            <select name="jenis" class="form-select" onchange="this.form.submit()">
+                                <option value="">Semua Jenis</option>
+                                {% for key, value in jenis_choices %}
+                                <option value="{{ key }}" {% if selected_jenis == key %}selected{% endif %}>
+                                    {{ value }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <select name="kategori" class="form-select" onchange="this.form.submit()">
+                                <option value="">Semua Kategori</option>
+                                {% for kat in kategori_list %}
+                                <option value="{{ kat.slug }}" {% if selected_kategori == kat.slug %}selected{% endif %}>
+                                    {{ kat.nama }} ({{ kat.berita_count }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <input type="text" name="q" class="form-control" 
+                                       placeholder="Cari berita..." value="{{ search_query }}">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Berita Unggulan -->
+                {% if featured_list and not search_query and not selected_jenis and not selected_kategori %}
+                <div class="featured-news mb-4" data-aos="fade-up">
+                    {% with berita=featured_list.first %}
+                    {% if berita %}
+                    <div class="featured-card">
+                        <div class="row g-0">
+                            <div class="col-md-6">
+                                <div class="featured-image">
+                                    {% if berita.gambar_utama %}
+                                    <img src="{{ berita.gambar_utama.url }}" alt="{{ berita.judul }}">
+                                    {% else %}
+                                    <img src="{% static 'images/berita-placeholder.jpg' %}" alt="{{ berita.judul }}">
+                                    {% endif %}
+                                    <span class="featured-badge">UNGGULAN</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="featured-content">
+                                    <span class="badge bg-{{ berita.kategori.warna|default:'primary' }} mb-2">
+                                        {{ berita.get_jenis_display }}
+                                    </span>
+                                    <h3><a href="{{ berita.get_absolute_url }}">{{ berita.judul }}</a></h3>
+                                    <p class="text-muted">{{ berita.get_ringkasan|truncatewords:30 }}</p>
+                                    <div class="featured-meta">
+                                        <span><i class="bi bi-calendar3"></i> {{ berita.published_at|date:"d M Y" }}</span>
+                                        <span><i class="bi bi-eye"></i> {{ berita.view_count }} views</span>
+                                    </div>
+                                    <a href="{{ berita.get_absolute_url }}" class="btn btn-primary mt-3">
+                                        Baca Selengkapnya <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+                {% endif %}
+                
+                <!-- Grid Berita -->
+                <div class="row g-4">
+                    {% for berita in berita_list %}
+                    <div class="col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}0">
+                        <article class="berita-card h-100">
+                            <div class="berita-image">
+                                {% if berita.gambar_utama %}
+                                <img src="{{ berita.gambar_utama.url }}" alt="{{ berita.judul }}">
+                                {% else %}
+                                <img src="{% static 'images/berita-placeholder.jpg' %}" alt="{{ berita.judul }}">
+                                {% endif %}
+                                <span class="berita-badge badge bg-{{ berita.kategori.warna|default:'primary' }}">
+                                    {{ berita.get_jenis_display }}
+                                </span>
+                                {% if berita.is_pinned %}
+                                <span class="pin-badge"><i class="bi bi-pin-angle-fill"></i></span>
+                                {% endif %}
+                            </div>
+                            <div class="berita-content">
+                                <div class="berita-meta">
+                                    <span><i class="bi bi-calendar3"></i> {{ berita.published_at|date:"d M Y" }}</span>
+                                    <span><i class="bi bi-eye"></i> {{ berita.view_count }}</span>
+                                </div>
+                                <h5 class="berita-title">
+                                    <a href="{{ berita.get_absolute_url }}">{{ berita.judul|truncatewords:12 }}</a>
+                                </h5>
+                                <p class="berita-excerpt">{{ berita.get_ringkasan|truncatewords:20 }}</p>
+                                <a href="{{ berita.get_absolute_url }}" class="btn btn-sm btn-outline-primary">
+                                    Baca Selengkapnya <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                        </article>
+                    </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <div class="empty-state text-center py-5">
+                            <i class="bi bi-newspaper display-1 text-muted"></i>
+                            <h4 class="mt-3">Tidak Ada Berita</h4>
+                            <p class="text-muted">
+                                {% if search_query %}
+                                Tidak ditemukan berita dengan kata kunci "{{ search_query }}"
+                                {% else %}
+                                Belum ada berita yang dipublikasikan.
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Paginasi -->
+                {% if page_obj.has_other_pages %}
+                <nav class="mt-5" aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_jenis %}&jenis={{ selected_jenis }}{% endif %}{% if selected_kategori %}&kategori={{ selected_kategori }}{% endif %}">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_jenis %}&jenis={{ selected_jenis }}{% endif %}{% if selected_kategori %}&kategori={{ selected_kategori }}{% endif %}">{{ num }}</a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_jenis %}&jenis={{ selected_jenis }}{% endif %}{% if selected_kategori %}&kategori={{ selected_kategori }}{% endif %}">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+            
+            <!-- Bilah Samping -->
+            <div class="col-lg-4">
+                <!-- Widget Pencarian -->
+                <div class="sidebar-widget" data-aos="fade-up">
+                    <h5 class="widget-title"><i class="bi bi-search me-2"></i>Pencarian</h5>
+                    <form method="GET">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control" 
+                                   placeholder="Cari berita..." value="{{ search_query }}">
+                            <button class="btn btn-primary" type="submit">Cari</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Widget Kategori -->
+                <div class="sidebar-widget" data-aos="fade-up">
+                    <h5 class="widget-title"><i class="bi bi-folder me-2"></i>Kategori</h5>
+                    <ul class="category-list">
+                        {% for kat in kategori_list %}
+                        <li>
+                            <a href="?kategori={{ kat.slug }}" class="{% if selected_kategori == kat.slug %}active{% endif %}">
+                                <span>{{ kat.nama }}</span>
+                                <span class="badge bg-primary rounded-pill">{{ kat.berita_count }}</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <!-- Widget Berita Populer -->
+                <div class="sidebar-widget" data-aos="fade-up">
+                    <h5 class="widget-title"><i class="bi bi-fire me-2"></i>Berita Populer</h5>
+                    <div class="popular-posts">
+                        {% for berita in popular_list %}
+                        <div class="popular-post-item">
+                            <div class="popular-post-image">
+                                {% if berita.gambar_utama %}
+                                <img src="{{ berita.gambar_utama.url }}" alt="{{ berita.judul }}">
+                                {% else %}
+                                <img src="{% static 'images/berita-placeholder.jpg' %}" alt="">
+                                {% endif %}
+                            </div>
+                            <div class="popular-post-content">
+                                <h6><a href="{{ berita.get_absolute_url }}">{{ berita.judul|truncatewords:6 }}</a></h6>
+                                <small class="text-muted">
+                                    <i class="bi bi-eye"></i> {{ berita.view_count }} views
+                                </small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Widget Tag -->
+                {% if tag_list %}
+                <div class="sidebar-widget" data-aos="fade-up">
+                    <h5 class="widget-title"><i class="bi bi-tags me-2"></i>Tag Populer</h5>
+                    <div class="tag-cloud">
+                        {% for tag in tag_list %}
+                        <a href="?tag={{ tag.slug }}" class="tag-link {% if selected_tag == tag.slug %}active{% endif %}">
+                            {{ tag.nama }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

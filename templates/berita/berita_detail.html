@@ -1,0 +1,282 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ berita.judul }} - {{ site_settings.site_name }}{% endblock %}
+{% block meta_description %}{{ berita.meta_description|default:berita.get_ringkasan }}{% endblock %}
+
+{% block content %}
+<!-- Header Halaman Modern -->
+<section class="page-header page-header-small berita-page">
+    <!-- Floating Decorative Shapes -->
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    
+    <div class="container">
+        <nav aria-label="breadcrumb" data-aos="fade-down">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'main:home' %}"><i class="bi bi-house-door me-1"></i>Beranda</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'berita:list' %}">Berita</a></li>
+                <li class="breadcrumb-item active">{{ berita.judul|truncatewords:5 }}</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <!-- Konten Utama -->
+            <div class="col-lg-8">
+                <article class="single-post" data-aos="fade-up">
+                    <!-- Header Artikel -->
+                    <header class="post-header">
+                        <div class="post-meta mb-3">
+                            <span class="badge bg-{{ berita.kategori.warna|default:'primary' }} me-2">
+                                {{ berita.get_jenis_display }}
+                            </span>
+                            {% if berita.kategori %}
+                            <a href="{% url 'berita:kategori_detail' berita.kategori.slug %}" class="badge bg-light text-dark">
+                                {{ berita.kategori.nama }}
+                            </a>
+                            {% endif %}
+                        </div>
+                        <h1 class="post-title">{{ berita.judul }}</h1>
+                        <div class="post-info">
+                            <span><i class="bi bi-calendar3"></i> {{ berita.published_at|date:"d F Y" }}</span>
+                            <span><i class="bi bi-person"></i> {{ berita.author.get_full_name|default:"Admin" }}</span>
+                            <span><i class="bi bi-eye"></i> {{ berita.view_count }} views</span>
+                            <span><i class="bi bi-share"></i> {{ berita.share_count }} shares</span>
+                        </div>
+                    </header>
+                    
+                    <!-- Gambar Utama -->
+                    {% if berita.gambar_utama %}
+                    <div class="post-image">
+                        <img src="{{ berita.gambar_utama.url }}" alt="{{ berita.gambar_alt|default:berita.judul }}" class="img-fluid rounded">
+                        {% if berita.gambar_alt %}
+                        <p class="image-caption text-muted text-center mt-2">
+                            <small>{{ berita.gambar_alt }}</small>
+                        </p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Video Berita -->
+                    {% if berita.video_url %}
+                    <div class="post-video mb-4">
+                        <div class="ratio ratio-16x9">
+                            <iframe src="{{ berita.video_url|cut:'watch?v='|cut:'https://www.youtube.com/'|add:'https://www.youtube.com/embed/' }}" 
+                                    allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Konten Artikel -->
+                    <div class="post-content">
+                        {{ berita.konten|safe }}
+                    </div>
+                    
+                    <!-- Galeri Foto -->
+                    {% if galeri_list %}
+                    <div class="post-gallery mt-4">
+                        <h5>Galeri Foto</h5>
+                        <div class="row g-2">
+                            {% for galeri in galeri_list %}
+                            <div class="col-4">
+                                <a href="{{ galeri.gambar.url }}" data-lightbox="gallery" data-title="{{ galeri.caption }}">
+                                    <img src="{{ galeri.gambar.url }}" alt="{{ galeri.caption }}" class="img-fluid rounded">
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Tag -->
+                    {% if berita.tags.all %}
+                    <div class="post-tags mt-4">
+                        <strong><i class="bi bi-tags"></i> Tags:</strong>
+                        {% for tag in berita.tags.all %}
+                        <a href="{% url 'berita:tag_detail' tag.slug %}" class="badge bg-light text-dark">
+                            {{ tag.nama }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Tombol Bagikan -->
+                    <div class="post-share mt-4">
+                        <strong><i class="bi bi-share"></i> Bagikan:</strong>
+                        <div class="share-buttons">
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" 
+                               target="_blank" class="btn btn-sm btn-primary" onclick="trackShare()">
+                                <i class="bi bi-facebook"></i> Facebook
+                            </a>
+                            <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ berita.judul }}" 
+                               target="_blank" class="btn btn-sm btn-info" onclick="trackShare()">
+                                <i class="bi bi-twitter-x"></i> Twitter
+                            </a>
+                            <a href="https://wa.me/?text={{ berita.judul }}%20{{ request.build_absolute_uri }}" 
+                               target="_blank" class="btn btn-sm btn-success" onclick="trackShare()">
+                                <i class="bi bi-whatsapp"></i> WhatsApp
+                            </a>
+                            <button class="btn btn-sm btn-secondary" onclick="copyLink()">
+                                <i class="bi bi-link-45deg"></i> Salin Link
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Navigasi Artikel -->
+                    <div class="post-navigation mt-5">
+                        <div class="row">
+                            <div class="col-6">
+                                {% if prev_berita %}
+                                <a href="{{ prev_berita.get_absolute_url }}" class="nav-link-prev">
+                                    <small class="text-muted"><i class="bi bi-arrow-left"></i> Sebelumnya</small>
+                                    <p class="mb-0">{{ prev_berita.judul|truncatewords:6 }}</p>
+                                </a>
+                                {% endif %}
+                            </div>
+                            <div class="col-6 text-end">
+                                {% if next_berita %}
+                                <a href="{{ next_berita.get_absolute_url }}" class="nav-link-next">
+                                    <small class="text-muted">Selanjutnya <i class="bi bi-arrow-right"></i></small>
+                                    <p class="mb-0">{{ next_berita.judul|truncatewords:6 }}</p>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                
+                <!-- Bagian Komentar -->
+                <div class="comments-section mt-5" data-aos="fade-up">
+                    <h5 class="mb-4">
+                        <i class="bi bi-chat-dots"></i> Komentar ({{ komentar_list.count }})
+                    </h5>
+                    
+                    <!-- Daftar Komentar -->
+                    <div class="comment-list">
+                        {% for komentar in komentar_list %}
+                        <div class="comment-item">
+                            <div class="comment-avatar">
+                                <i class="bi bi-person-circle"></i>
+                            </div>
+                            <div class="comment-content">
+                                <div class="comment-header">
+                                    <strong>{{ komentar.nama }}</strong>
+                                    <small class="text-muted">{{ komentar.created_at|timesince }} yang lalu</small>
+                                </div>
+                                <p>{{ komentar.komentar }}</p>
+                                
+                                <!-- Balasan -->
+                                {% if komentar.replies.all %}
+                                <div class="comment-replies">
+                                    {% for reply in komentar.replies.all %}
+                                    {% if reply.is_approved %}
+                                    <div class="comment-item">
+                                        <div class="comment-avatar">
+                                            <i class="bi bi-person-circle"></i>
+                                        </div>
+                                        <div class="comment-content">
+                                            <div class="comment-header">
+                                                <strong>{{ reply.nama }}</strong>
+                                                <small class="text-muted">{{ reply.created_at|timesince }} yang lalu</small>
+                                            </div>
+                                            <p>{{ reply.komentar }}</p>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-muted">Belum ada komentar. Jadilah yang pertama berkomentar!</p>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Formulir Komentar -->
+                    <div class="comment-form mt-4">
+                        <h6>Tulis Komentar</h6>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <input type="text" name="nama" class="form-control" placeholder="Nama *" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="email" name="email" class="form-control" placeholder="Email *" required>
+                                </div>
+                                <div class="col-12">
+                                    <textarea name="komentar" class="form-control" rows="4" placeholder="Tulis komentar Anda..." required></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-send"></i> Kirim Komentar
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bilah Samping -->
+            <div class="col-lg-4">
+                <!-- Berita Terkait -->
+                {% if related_list %}
+                <div class="sidebar-widget" data-aos="fade-up">
+                    <h5 class="widget-title"><i class="bi bi-link-45deg me-2"></i>Berita Terkait</h5>
+                    <div class="related-posts">
+                        {% for item in related_list %}
+                        <div class="related-post-item">
+                            <div class="related-post-image">
+                                {% if item.gambar_utama %}
+                                <img src="{{ item.gambar_utama.url }}" alt="{{ item.judul }}">
+                                {% else %}
+                                <img src="{% static 'images/berita-placeholder.jpg' %}" alt="">
+                                {% endif %}
+                            </div>
+                            <div class="related-post-content">
+                                <h6><a href="{{ item.get_absolute_url }}">{{ item.judul|truncatewords:8 }}</a></h6>
+                                <small class="text-muted">{{ item.published_at|date:"d M Y" }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Kembali ke Daftar -->
+                <div class="sidebar-widget" data-aos="fade-up">
+                    <a href="{% url 'berita:list' %}" class="btn btn-outline-primary w-100">
+                        <i class="bi bi-arrow-left"></i> Kembali ke Daftar Berita
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function trackShare() {
+    fetch("{% url 'berita:share' berita.slug %}", {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    });
+}
+
+function copyLink() {
+    navigator.clipboard.writeText(window.location.href);
+    alert('Link berhasil disalin!');
+    trackShare();
+}
+</script>
+{% endblock %}

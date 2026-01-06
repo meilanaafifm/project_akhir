@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ dosen.nama }} - {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<!-- Header Halaman Modern -->
+<section class="page-header page-header-small akademik-page">
+    <!-- Floating Decorative Shapes -->
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    
+    <div class="container">
+        <nav aria-label="breadcrumb" data-aos="fade-down">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'main:home' %}"><i class="bi bi-house-door me-1"></i>Beranda</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'akademik:dosen_list' %}">Dosen</a></li>
+                <li class="breadcrumb-item active">{{ dosen.nama }}</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <!-- Kartu Profil -->
+            <div class="col-lg-4 mb-4">
+                <div class="profile-card sticky-top" style="top: 100px;" data-aos="fade-up">
+                    <div class="profile-image">
+                        {% if dosen.foto %}
+                        <img src="{{ dosen.foto.url }}" alt="{{ dosen.nama }}">
+                        {% else %}
+                        <div class="profile-placeholder">
+                            <i class="bi bi-person"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="profile-body text-center">
+                        <h4 class="mb-1">{{ dosen.nama }}</h4>
+                        <p class="text-muted mb-3">{{ dosen.nip }}</p>
+                        
+                        <div class="profile-badges mb-3">
+                            <span class="badge bg-primary">{{ dosen.get_jenjang_display }}</span>
+                            {% if dosen.jabatan_fungsional %}
+                            <span class="badge bg-secondary">{{ dosen.get_jabatan_fungsional_display }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        {% if dosen.jabatan_struktural %}
+                        <p class="mb-3"><small><i class="bi bi-briefcase"></i> {{ dosen.jabatan_struktural }}</small></p>
+                        {% endif %}
+                        
+                        <div class="profile-social">
+                            {% if dosen.email %}
+                            <a href="mailto:{{ dosen.email }}" class="btn btn-sm btn-outline-primary" title="Email">
+                                <i class="bi bi-envelope"></i>
+                            </a>
+                            {% endif %}
+                            {% if dosen.google_scholar %}
+                            <a href="{{ dosen.google_scholar }}" target="_blank" class="btn btn-sm btn-outline-info" title="Google Scholar">
+                                <i class="bi bi-google"></i>
+                            </a>
+                            {% endif %}
+                            {% if dosen.scopus %}
+                            <a href="{{ dosen.scopus }}" target="_blank" class="btn btn-sm btn-outline-warning" title="Scopus">
+                                <i class="bi bi-journal-bookmark"></i>
+                            </a>
+                            {% endif %}
+                            {% if dosen.sinta %}
+                            <a href="{{ dosen.sinta }}" target="_blank" class="btn btn-sm btn-outline-success" title="SINTA">
+                                <i class="bi bi-bar-chart"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Konten Utama -->
+            <div class="col-lg-8">
+                <!-- Tentang -->
+                <div class="content-section" data-aos="fade-up">
+                    <h5 class="section-title"><i class="bi bi-person-lines-fill"></i> Tentang</h5>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Nama Lengkap</span>
+                            <span class="info-value">{{ dosen.nama }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">NIP</span>
+                            <span class="info-value">{{ dosen.nip }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">NIDN</span>
+                            <span class="info-value">{{ dosen.nidn|default:"-" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Email</span>
+                            <span class="info-value">{{ dosen.email|default:"-" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Pendidikan Terakhir</span>
+                            <span class="info-value">{{ dosen.get_jenjang_display }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Jabatan Fungsional</span>
+                            <span class="info-value">{{ dosen.get_jabatan_fungsional_display|default:"-" }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bidang Keahlian -->
+                {% if dosen.bidang_keahlian %}
+                <div class="content-section" data-aos="fade-up">
+                    <h5 class="section-title"><i class="bi bi-bookmark-star"></i> Bidang Keahlian</h5>
+                    <div class="expertise-tags">
+                        {% for keahlian in dosen.get_keahlian_list %}
+                        <span class="badge bg-light text-dark">{{ keahlian }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Grup Riset -->
+                {% if dosen.riset_grup.all %}
+                <div class="content-section" data-aos="fade-up">
+                    <h5 class="section-title"><i class="bi bi-people"></i> Grup Riset</h5>
+                    <div class="row g-3">
+                        {% for grup in dosen.riset_grup.all %}
+                        <div class="col-md-6">
+                            <div class="riset-card">
+                                <h6>{{ grup.nama }}</h6>
+                                <p class="text-muted mb-0">{{ grup.deskripsi|truncatewords:15 }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Riwayat Pendidikan -->
+                {% if dosen.riwayat_pendidikan %}
+                <div class="content-section" data-aos="fade-up">
+                    <h5 class="section-title"><i class="bi bi-mortarboard"></i> Riwayat Pendidikan</h5>
+                    <div class="timeline">
+                        {% for pendidikan in dosen.get_pendidikan_list %}
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <p class="mb-0">{{ pendidikan }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Biografi -->
+                {% if dosen.biografi %}
+                <div class="content-section" data-aos="fade-up">
+                    <h5 class="section-title"><i class="bi bi-file-person"></i> Biografi</h5>
+                    <div class="biography">
+                        {{ dosen.biografi|linebreaks }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Publikasi -->
+                {% if publikasi_list %}
+                <div class="content-section" data-aos="fade-up">
+                    <h5 class="section-title"><i class="bi bi-journal-text"></i> Publikasi Terbaru</h5>
+                    <div class="publikasi-list">
+                        {% for pub in publikasi_list %}
+                        <div class="publikasi-item">
+                            <h6>{{ pub.judul }}</h6>
+                            <p class="text-muted mb-1">
+                                <small>{{ pub.penulis }}</small>
+                            </p>
+                            <p class="text-muted mb-0">
+                                <small>
+                                    <i class="bi bi-journal"></i> {{ pub.nama_jurnal }} | 
+                                    <i class="bi bi-calendar3"></i> {{ pub.tahun }}
+                                    {% if pub.link %}
+                                    | <a href="{{ pub.link }}" target="_blank"><i class="bi bi-link-45deg"></i> Link</a>
+                                    {% endif %}
+                                </small>
+                            </p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <a href="{% url 'akademik:publikasi_list' %}?dosen={{ dosen.slug }}" class="btn btn-outline-primary mt-3">
+                        Lihat Semua Publikasi <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+                {% endif %}
+                
+                <!-- Tombol Kembali -->
+                <div class="mt-4" data-aos="fade-up">
+                    <a href="{% url 'akademik:dosen_list' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-left"></i> Kembali ke Daftar Dosen
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

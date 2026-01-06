@@ -1,0 +1,66 @@
+<!-- Modern Page Header -->
+<section class="page-header {{ header_class|default:'' }}">
+    <!-- Floating Decorative Shapes -->
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    
+    <!-- Animated Particles -->
+    <div class="header-particles">
+        <span></span><span></span><span></span>
+        <span></span><span></span><span></span>
+    </div>
+    
+    <div class="container">
+        <nav aria-label="breadcrumb" data-aos="fade-down" data-aos-delay="100">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'main:home' %}"><i class="bi bi-house-door me-1"></i>Beranda</a>
+                </li>
+                {% block breadcrumb_items %}{% endblock %}
+            </ol>
+        </nav>
+        <h1 class="page-title" data-aos="fade-up" data-aos-delay="200">{% block header_title %}{% endblock %}</h1>
+        <p class="page-subtitle" data-aos="fade-up" data-aos-delay="300">{% block header_subtitle %}{% endblock %}</p>
+    </div>
+</section>
+
+<style>
+/* Header Particles Animation */
+.header-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.header-particles span {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    animation: header-particle-float 15s infinite;
+}
+
+.header-particles span:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; width: 15px; height: 15px; }
+.header-particles span:nth-child(2) { left: 20%; top: 60%; animation-delay: -2s; width: 25px; height: 25px; }
+.header-particles span:nth-child(3) { left: 40%; top: 40%; animation-delay: -4s; width: 10px; height: 10px; }
+.header-particles span:nth-child(4) { left: 60%; top: 70%; animation-delay: -6s; width: 20px; height: 20px; }
+.header-particles span:nth-child(5) { left: 80%; top: 30%; animation-delay: -8s; width: 30px; height: 30px; }
+.header-particles span:nth-child(6) { left: 90%; top: 80%; animation-delay: -10s; width: 12px; height: 12px; }
+
+@keyframes header-particle-float {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.3;
+    }
+    50% {
+        transform: translateY(-30px) rotate(180deg);
+        opacity: 0.6;
+    }
+}
+</style>

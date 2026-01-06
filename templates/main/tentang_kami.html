@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tentang Kami - {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<!-- Header Halaman Modern -->
+<section class="page-header">
+    <!-- Floating Decorative Shapes -->
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    
+    <!-- Animated Particles -->
+    <div class="header-particles">
+        <span></span><span></span><span></span>
+        <span></span><span></span><span></span>
+    </div>
+    
+    <div class="container">
+        <nav aria-label="breadcrumb" data-aos="fade-down" data-aos-delay="100">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'main:home' %}"><i class="bi bi-house-door me-1"></i>Beranda</a></li>
+                <li class="breadcrumb-item active">Tentang Kami</li>
+            </ol>
+        </nav>
+        <h1 class="page-title" data-aos="fade-up" data-aos-delay="200">📖 Tentang Kami</h1>
+        <p class="page-subtitle" data-aos="fade-up" data-aos-delay="300">Mengenal lebih dekat Program Studi kami</p>
+    </div>
+</section>
+
+<!-- Konten Tentang Kami -->
+<section class="section-padding">
+    <div class="container">
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6" data-aos="fade-right">
+                {% if profil.gambar_prodi %}
+                <img src="{{ profil.gambar_prodi.url }}" alt="Program Studi" class="img-fluid rounded shadow">
+                {% else %}
+                <img src="{% static 'images/about-placeholder.jpg' %}" alt="Program Studi" class="img-fluid rounded shadow">
+                {% endif %}
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <h2 class="mb-4">{{ profil.nama_prodi }}</h2>
+                <div class="about-text">
+                    {{ profil.sejarah|linebreaks }}
+                </div>
+                
+                <div class="about-stats row g-3 mt-4">
+                    <div class="col-4">
+                        <div class="stat-box">
+                            <h3 class="text-primary">{{ profil.tahun_berdiri }}</h3>
+                            <small class="text-muted">Tahun Berdiri</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stat-box">
+                            <h3 class="text-success">{{ profil.akreditasi }}</h3>
+                            <small class="text-muted">Akreditasi</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stat-box">
+                            <h3 class="text-warning">{{ profil.jumlah_mahasiswa }}+</h3>
+                            <small class="text-muted">Mahasiswa</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Visi dan Misi -->
+<section class="section-padding bg-light">
+    <div class="container">
+        <div class="section-header text-center mb-5" data-aos="fade-up">
+            <h2>🎯 Visi & Misi</h2>
+            <p class="text-muted">Arah dan tujuan program studi kami</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-6" data-aos="fade-up">
+                <div class="vision-card h-100">
+                    <div class="card-icon">
+                        <i class="bi bi-eye"></i>
+                    </div>
+                    <h4>Visi</h4>
+                    <p>{{ profil.visi }}</p>
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="mission-card h-100">
+                    <div class="card-icon">
+                        <i class="bi bi-bullseye"></i>
+                    </div>
+                    <h4>Misi</h4>
+                    <ol class="mission-list">
+                        {% for misi in profil.get_misi_list %}
+                        <li>{{ misi }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Tujuan Prodi -->
+{% if profil.tujuan %}
+<section class="section-padding">
+    <div class="container">
+        <div class="section-header text-center mb-5" data-aos="fade-up">
+            <h2>🎓 Tujuan</h2>
+            <p class="text-muted">Target dan sasaran program studi</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for tujuan in profil.get_tujuan_list %}
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}00">
+                <div class="goal-card">
+                    <span class="goal-number">{{ forloop.counter }}</span>
+                    <p>{{ tujuan }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Struktur Organisasi Prodi -->
+{% if profil.struktur_organisasi %}
+<section class="section-padding bg-light">
+    <div class="container">
+        <div class="section-header text-center mb-5" data-aos="fade-up">
+            <h2>👥 Struktur Organisasi</h2>
+            <p class="text-muted">Susunan organisasi program studi</p>
+        </div>
+        
+        <div class="text-center" data-aos="zoom-in">
+            <img src="{{ profil.struktur_organisasi.url }}" alt="Struktur Organisasi" class="img-fluid rounded shadow">
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Informasi Kontak -->
+<section class="section-padding">
+    <div class="container">
+        <div class="section-header text-center mb-5" data-aos="fade-up">
+            <h2>📍 Lokasi & Kontak</h2>
+            <p class="text-muted">Hubungi kami untuk informasi lebih lanjut</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-6" data-aos="fade-up">
+                <div class="contact-card h-100">
+                    <div class="contact-item">
+                        <i class="bi bi-geo-alt-fill text-primary"></i>
+                        <div>
+                            <h6>Alamat</h6>
+                            <p>{{ profil.alamat }}</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="bi bi-telephone-fill text-success"></i>
+                        <div>
+                            <h6>Telepon</h6>
+                            <p>{{ profil.telepon }}</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="bi bi-envelope-fill text-danger"></i>
+                        <div>
+                            <h6>Email</h6>
+                            <p><a href="mailto:{{ profil.email }}">{{ profil.email }}</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="social-links mt-4">
+                        {% if profil.facebook %}
+                        <a href="{{ profil.facebook }}" target="_blank" class="btn btn-outline-primary">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        {% endif %}
+                        {% if profil.instagram %}
+                        <a href="{{ profil.instagram }}" target="_blank" class="btn btn-outline-danger">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        {% endif %}
+                        {% if profil.youtube %}
+                        <a href="{{ profil.youtube }}" target="_blank" class="btn btn-outline-danger">
+                            <i class="bi bi-youtube"></i>
+                        </a>
+                        {% endif %}
+                        {% if profil.twitter %}
+                        <a href="{{ profil.twitter }}" target="_blank" class="btn btn-outline-info">
+                            <i class="bi bi-twitter"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+                {% if profil.google_maps_embed %}
+                <div class="map-container rounded overflow-hidden shadow">
+                    {{ profil.google_maps_embed|safe }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

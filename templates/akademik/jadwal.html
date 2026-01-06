@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Jadwal Kuliah - {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<!-- Header Halaman Modern -->
+<section class="page-header akademik-page">
+    <!-- Floating Decorative Shapes -->
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    
+    <!-- Animated Particles -->
+    <div class="header-particles">
+        <span></span><span></span><span></span>
+        <span></span><span></span><span></span>
+    </div>
+    
+    <div class="container">
+        <nav aria-label="breadcrumb" data-aos="fade-down" data-aos-delay="100">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'main:home' %}"><i class="bi bi-house-door me-1"></i>Beranda</a></li>
+                <li class="breadcrumb-item active">Jadwal Kuliah</li>
+            </ol>
+        </nav>
+        <h1 class="page-title" data-aos="fade-up" data-aos-delay="200">📅 Jadwal Kuliah</h1>
+        <p class="page-subtitle" data-aos="fade-up" data-aos-delay="300">Jadwal perkuliahan semester {{ tahun_akademik }}</p>
+    </div>
+</section>
+
+<!-- Filter -->
+<section class="py-4 bg-light">
+    <div class="container">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label">Semester</label>
+                <select class="form-select" id="filterSemester">
+                    <option value="">Semua Semester</option>
+                    {% for i in "12345678" %}
+                    <option value="{{ i }}">Semester {{ i }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Hari</label>
+                <select class="form-select" id="filterHari">
+                    <option value="">Semua Hari</option>
+                    <option value="senin">Senin</option>
+                    <option value="selasa">Selasa</option>
+                    <option value="rabu">Rabu</option>
+                    <option value="kamis">Kamis</option>
+                    <option value="jumat">Jumat</option>
+                    <option value="sabtu">Sabtu</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Cari Mata Kuliah / Dosen</label>
+                <input type="text" class="form-control" id="searchJadwal" placeholder="Ketik untuk mencari...">
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100" id="btnFilter">
+                    <i class="bi bi-funnel me-1"></i> Filter
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Jadwal -->
+<section class="section-padding">
+    <div class="container">
+        <!-- Tab Hari -->
+        <ul class="nav nav-pills mb-4 justify-content-center" id="hariTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#all-days" type="button">
+                    Semua
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#senin" type="button">
+                    Senin
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#selasa" type="button">
+                    Selasa
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#rabu" type="button">
+                    Rabu
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#kamis" type="button">
+                    Kamis
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#jumat" type="button">
+                    Jumat
+                </button>
+            </li>
+        </ul>
+        
+        <!-- Tabel Jadwal -->
+        <div class="tab-content" id="hariTabContent">
+            <div class="tab-pane fade show active" id="all-days">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="jadwalTable">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Hari</th>
+                                <th>Jam</th>
+                                <th>Kode</th>
+                                <th>Mata Kuliah</th>
+                                <th>SKS</th>
+                                <th>Dosen</th>
+                                <th>Ruang</th>
+                                <th>Kelas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for jadwal in jadwal_list %}
+                            <tr data-semester="{{ jadwal.matakuliah.semester }}" data-hari="{{ jadwal.hari }}">
+                                <td>
+                                    <span class="badge bg-day-{{ jadwal.hari }}">{{ jadwal.get_hari_display }}</span>
+                                </td>
+                                <td>{{ jadwal.jam_mulai|time:"H:i" }} - {{ jadwal.jam_selesai|time:"H:i" }}</td>
+                                <td><code>{{ jadwal.matakuliah.kode }}</code></td>
+                                <td>
+                                    <a href="{% url 'akademik:matakuliah_detail' jadwal.matakuliah.kode %}">
+                                        {{ jadwal.matakuliah.nama }}
+                                    </a>
+                                </td>
+                                <td>{{ jadwal.matakuliah.sks }}</td>
+                                <td>{{ jadwal.dosen.nama }}</td>
+                                <td>{{ jadwal.ruangan }}</td>
+                                <td><span class="badge bg-secondary">{{ jadwal.kelas }}</span></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center py-5">
+                                    <i class="bi bi-calendar-x display-4 text-muted"></i>
+                                    <p class="mt-3 text-muted">Belum ada jadwal kuliah</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Info -->
+        <div class="alert alert-info mt-4">
+            <i class="bi bi-info-circle me-2"></i>
+            Jadwal dapat berubah sewaktu-waktu. Silakan hubungi akademik untuk informasi lebih lanjut.
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.nav-pills .nav-link {
+    color: #667eea;
+    border-radius: 50px;
+    padding: 0.5rem 1.5rem;
+    margin: 0 0.25rem;
+}
+
+.nav-pills .nav-link.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-day-senin { background-color: #e74c3c; }
+.bg-day-selasa { background-color: #3498db; }
+.bg-day-rabu { background-color: #2ecc71; }
+.bg-day-kamis { background-color: #f39c12; }
+.bg-day-jumat { background-color: #9b59b6; }
+.bg-day-sabtu { background-color: #1abc9c; }
+
+.table th {
+    white-space: nowrap;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchJadwal');
+    const filterSemester = document.getElementById('filterSemester');
+    const filterHari = document.getElementById('filterHari');
+    const table = document.getElementById('jadwalTable');
+    
+    function filterTable() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const semester = filterSemester.value;
+        const hari = filterHari.value;
+        const rows = table.querySelectorAll('tbody tr');
+        
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            const rowSemester = row.dataset.semester;
+            const rowHari = row.dataset.hari;
+            
+            let show = true;
+            
+            if (searchTerm && !text.includes(searchTerm)) show = false;
+            if (semester && rowSemester !== semester) show = false;
+            if (hari && rowHari !== hari) show = false;
+            
+            row.style.display = show ? '' : 'none';
+        });
+    }
+    
+    searchInput.addEventListener('input', filterTable);
+    filterSemester.addEventListener('change', filterTable);
+    filterHari.addEventListener('change', filterTable);
+    document.getElementById('btnFilter').addEventListener('click', filterTable);
+});
+</script>
+{% endblock %}
