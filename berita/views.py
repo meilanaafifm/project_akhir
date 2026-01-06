@@ -50,11 +50,12 @@ class BeritaListView(ListView):
             berita_count=Count('berita', filter=Q(berita__is_published=True))
         )
         context['tag_list'] = TagBerita.objects.all()[:20]
-        context['berita_populer'] = Berita.objects.filter(is_published=True).order_by('-views_count')[:5]
-        context['jenis_list'] = Berita.JENIS_CHOICES
+        context['berita_populer'] = Berita.objects.filter(is_published=True).order_by('-view_count')[:5]
+        context['jenis_choices'] = Berita.JENIS_CHOICES
         context['selected_jenis'] = self.request.GET.get('jenis', '')
         context['selected_kategori'] = self.request.GET.get('kategori', '')
         context['search_query'] = self.request.GET.get('q', '')
+        context['featured_list'] = Berita.objects.filter(is_published=True, is_featured=True)[:3]
         return context
 
 
@@ -70,7 +71,7 @@ class BeritaDetailView(DetailView):
     
     def get_object(self, queryset=None):
         obj = super().get_object(queryset)
-        obj.views_count += 1
+        obj.view_count += 1
         obj.save()
         return obj
     

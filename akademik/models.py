@@ -136,6 +136,32 @@ class Kurikulum(models.Model):
     
     def __str__(self):
         return f'{self.nama} ({self.tahun})'
+    
+    @property
+    def total_sks(self):
+        """Menghitung total SKS kurikulum"""
+        total = 0
+        for mk in self.mata_kuliah.all():
+            total += mk.sks_teori + mk.sks_praktik
+        return total
+    
+    def get_semester_list(self):
+        """Mengembalikan daftar semester yang ada"""
+        semesters = self.mata_kuliah.values_list('semester', flat=True).distinct().order_by('semester')
+        return list(semesters)
+    
+    def get_matakuliah_by_semester(self):
+        """Mengembalikan semua mata kuliah"""
+        return self.mata_kuliah.all().order_by('semester', 'kode')
+    
+    def get_sks_per_semester(self):
+        """Menghitung SKS per semester"""
+        sks_dict = {}
+        for mk in self.mata_kuliah.all():
+            if mk.semester not in sks_dict:
+                sks_dict[mk.semester] = 0
+            sks_dict[mk.semester] += mk.sks_teori + mk.sks_praktik
+        return sks_dict
 
 
 class MataKuliah(models.Model):

@@ -6,7 +6,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, TemplateView
 from django.db.models import Q
 
-from .models import Dosen, MataKuliah, Fasilitas, JadwalKuliah, RisetGrup, Publikasi
+from .models import Dosen, MataKuliah, Fasilitas, JadwalKuliah, RisetGrup, Publikasi, Kurikulum
 
 
 class DosenListView(ListView):
@@ -63,8 +63,9 @@ class KurikulumView(TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['kurikulum_list'] = Kurikulum.objects.filter(is_active=True)
         context['semester_list'] = range(1, 9)
-        context['matakuliah_list'] = MataKuliah.objects.filter(is_active=True).order_by('semester', 'nama')
+        context['matakuliah_list'] = MataKuliah.objects.all().order_by('semester', 'nama')
         
         semester = self.request.GET.get('semester')
         if semester:
@@ -84,7 +85,7 @@ class MataKuliahDetailView(DetailView):
     slug_field = 'slug'
     
     def get_queryset(self):
-        return MataKuliah.objects.filter(is_active=True)
+        return MataKuliah.objects.all()
 
 
 class FasilitasView(ListView):
